@@ -1,5 +1,6 @@
 import numpy as np
-from models import Vector3, Skeleton
+from .vector3 import Vector3
+from .skeleton import Skeleton
 from ..pydantic_ext import BaseModel
 
 

@@ -3,9 +3,9 @@ from ..pydantic_ext import BaseModel
 
 
 class Color(BaseModel):
-    r: float
-    g: float
-    b: float
+    r: int | float
+    g: int | float
+    b: int | float
 
     @staticmethod
     def from_string(color_name: str) -> "Color":

@@ -5,3 +5,7 @@ __pycache__/
 .vscode/
 .vscode-test/
 .vagra
+
+build/
+*.egg-info/
+dist/

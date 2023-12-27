@@ -2,19 +2,20 @@ import time
 import numpy as np
 from socketio import Client
 
-from src.models.vector3 import Vector3
-from .pydantic_ext import BaseModel
-from .models import Color, Skeleton, CurrentState
+from .models import Color, Skeleton, CurrentState, Vector3
 
 
 class PyPlot:
     model: CurrentState
+    _msgs_sent: int = 0
 
     def __init__(self, title: str | None, host: str = "localhost", port: int = 11000):
         self.model = CurrentState(title=title)
 
         self._socket_url = f"http://{host}:{port}"
-        self.client = Client()
+        self.client = Client(
+            reconnection_attempts=10,
+        )
 
     def __health_check(self, xs: list[float], ys: list[float], zs: list[float]):
         assert len(xs) == len(ys), "xs and ys must have the same length"
@@ -25,12 +26,20 @@ class PyPlot:
 
     def figure(self):
         self._ensure_connection()
+        self.clear()
 
-    def scatter(self, xs: list[float], ys: list[float], zs: list[float] = []):
+    def scatter(
+        self,
+        xs: list[float],
+        ys: list[float],
+        zs: list[float] = [],
+        size: int = 1,
+        color="blue",
+    ):
         self.__health_check(xs, ys, zs)
         pts = np.asarray([[xs[i], ys[i], zs[i]] for i in range(len(xs))])
 
-        self.model.add_points(pts)
+        self.model.add_points(points=pts, size=size, color=color)
 
     def plot(self, xs: list[float], ys: list[float], zs: list[float], color="blue"):
         self.__health_check(xs, ys, zs)
@@ -53,13 +62,14 @@ class PyPlot:
 
         self.model.add_skeleton(sk)
 
-    def clear(self):
+    def clear(self, send_now: bool = False):
         self.model.clear()
-        self._send()
+        if send_now:
+            self._send()
 
-    def show(self):
+    def show(self, include_wait: bool = False) -> None:
         self._ensure_connection()
-        self._send()
+        self._send(include_wait=include_wait)
 
     def pause(self, time_seconds: int):
         time.sleep(time_seconds)
@@ -68,11 +78,35 @@ class PyPlot:
         if self.client.connected:
             self.client.disconnect()
 
-    def _ensure_connection(self):
+    def _ensure_connection(self, max_retry: int = 10):
         if not self.client.connected:
-            self.client.connect(self._socket_url)
+            attempts = 0
+            while True:
+                if attempts > max_retry:
+                    raise ConnectionError("Cannot connect to Socket.IO server")
+                try:
+                    self.client.connect(
+                        url=self._socket_url, wait_timeout=10, wait=True
+                    )
+                    break
+                except ConnectionError as e:
+                    print("Connection error", e)
+                    print("Retrying...")
+                    time.sleep(1)
+                attempts += 1
+        elif self._msgs_sent != 0 and self._msgs_sent % 1000 == 0:
+            # Reconnect every 1000 messages, I don't know why but sometimes the client lose connection without notification or errors.
+            self.client.disconnect()
+            self.client.connect(url=self._socket_url, wait_timeout=10, wait=True)
+            self._msgs_sent = 0  # reset counter
 
-    def _send(self):
+    def _send(self, include_wait: bool = False):
         json_data = self.model.model_dump()
-        self.client.emit("update", json_data)
-        time.sleep(0.1) # wait for sending
+        try:
+            self.client.emit("update", json_data)
+        except Exception as e:
+            print("Error sending data", e)
+        if include_wait:
+            time.sleep(0.1)  # wait for sending
+
+        self._msgs_sent += 1

@@ -1,4 +1,7 @@
 import numpy as np
+
+from .color import Color
+from .point import Point
 from .vector3 import Vector3
 from .skeleton import Skeleton
 from ..pydantic_ext import BaseModel
@@ -6,7 +9,7 @@ from ..pydantic_ext import BaseModel
 
 class CurrentState(BaseModel):
     title: str | None = None
-    points: list[Vector3] = []
+    points: list[Point] = []
     skeletons: list[Skeleton] = []
 
     ### Clear function
@@ -21,8 +24,12 @@ class CurrentState(BaseModel):
         self.skeletons = []
 
     ### Add to state
-    def add_points(self, points: np.ndarray):
+    def add_points(self, points: np.ndarray, size: int = 1, color="blue"):
         points = [Vector3.from_numpy(p) for p in points]
+        c = Color.from_string(color) if isinstance(color, str) else Color.from_tuple(color)
+        points = [
+            Point(location=p, size=size, color=c) for p in points
+        ]
         self.points.extend(points)
 
     def add_skeleton(self, skeleton: Skeleton):

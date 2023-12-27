@@ -4,5 +4,39 @@
 			"path": "."
 		}
 	],
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Server",
+				"type": "python",
+				"request": "launch",
+				"program": "${workspaceFolder}/src/server.py",
+				"env": {
+					"PYTHONPATH": "${workspaceFolder}"
+				},
+				"console": "integratedTerminal"
+			},
+			{
+				"name": "Demo Client",
+				"type": "python",
+				"request": "launch",
+				"env": {
+					"PYTHONPATH": "${workspaceFolder}"
+				},
+				"program": "${workspaceFolder}/test.py",
+				"console": "integratedTerminal"
+			}
+		],
+		"compounds": [
+			{
+				"name": "Server & Demo",
+				"configurations": [
+					"Server",
+					"Demo Client"
+				]
+			}
+		]
+	},
 	"settings": {}
 }

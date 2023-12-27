@@ -1,0 +1,10 @@
+black
+flask_cors
+flask_cors
+flask_socketio
+numpy
+pydantic
+python-socketio
+requests
+webcolors
+websocket-client

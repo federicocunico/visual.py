@@ -1,15 +1,17 @@
 import time
+import webbrowser
 import numpy as np
 from socketio import Client
 
 from .models import Color, Skeleton, CurrentState, Vector3
+from .cfg import PORT
 
 
 class PyPlot:
     model: CurrentState
     _msgs_sent: int = 0
 
-    def __init__(self, title: str | None, host: str = "localhost", port: int = 11000):
+    def __init__(self, title: str | None, host: str = "localhost", port: int = PORT):
         self.model = CurrentState(title=title)
 
         self._socket_url = f"http://{host}:{port}"
@@ -67,9 +69,11 @@ class PyPlot:
         if send_now:
             self._send()
 
-    def show(self, include_wait: bool = False) -> None:
+    def show(self, include_wait: bool = False, open_browser: bool = False) -> None:
         self._ensure_connection()
         self._send(include_wait=include_wait)
+        if open_browser:
+            self._open_browser()
 
     def pause(self, time_seconds: int):
         time.sleep(time_seconds)
@@ -110,3 +114,6 @@ class PyPlot:
             time.sleep(0.1)  # wait for sending
 
         self._msgs_sent += 1
+
+    def _open_browser(self):
+        webbrowser.open(self._socket_url)

@@ -9,9 +9,12 @@ from flask import request
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
-app = flask.Flask(__name__)
+from .cfg import STATIC_PATH
+
+app = flask.Flask(__name__, static_folder=STATIC_PATH, static_url_path="")
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
+server_main_thread = None
 
 ### Global variables
 clients = []
@@ -27,6 +30,12 @@ def data() -> flask.Response:
     with open(data_file, "r") as f:
         data = json.load(f)
     return flask.jsonify(data)
+
+
+@app.route("/", methods=["GET"])
+def index() -> flask.Response:
+    # send html file in static folder
+    return app.send_static_file("index.html")
 
 
 ### SocketIO
@@ -74,11 +83,25 @@ def handle_connect() -> None:
 
 
 ### Main
+def server_socket_main_thread(port: int):
+    global server_main_thread
+
+    if server_main_thread is None:
+        # First time running the app? Then serve it!
+        def serve():
+            socketio.run(app, host="0.0.0.0", port=port)
+
+        server_main_thread = Thread(target=serve)
+        server_main_thread.start()
+    return server_main_thread
+
+
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=11000)
+    parser.add_argument("--port", type=int, default=40000)
 
     args = parser.parse_args()
-    socketio.run(app, host="0.0.0.0", port=args.port)
+    _t = server_socket_main_thread(args.port)
+    _t.join()

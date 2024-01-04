@@ -1,15 +1,15 @@
 import json
-import pickle
+import os
 from threading import Thread
 import time
 
 # import pydantic
 import flask
-from flask import request
+from flask import request, send_from_directory, render_template_string
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
-from .cfg import STATIC_PATH
+from .cfg import PORT, STATIC_PATH
 
 app = flask.Flask(__name__, static_folder=STATIC_PATH, static_url_path="")
 CORS(app)
@@ -35,7 +35,13 @@ def data() -> flask.Response:
 @app.route("/", methods=["GET"])
 def index() -> flask.Response:
     # send html file in static folder
-    return app.send_static_file("index.html")
+    fname = "index.html"
+    html_local_file = os.path.join(STATIC_PATH, fname)
+    assert os.path.exists(html_local_file), f"File {html_local_file} does not exist"
+    # return send_from_directory(STATIC_PATH, fname)
+    with open(html_local_file, "r") as fp:
+        html_str = "".join(fp.readlines())
+    return render_template_string(html_str, remote_port=PORT)
 
 
 ### SocketIO

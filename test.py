@@ -49,7 +49,6 @@ def example3():
     y = y + 1  # move up a bit
     z = t
 
-    open_browser = True
     _t = 0
     while True:
         print("\rt:", _t, end="")
@@ -65,9 +64,7 @@ def example3():
 
         plt.scatter(xs=[_x], ys=[_y], zs=[_z], size=0.5, color="red")
 
-        plt.show(open_browser=open_browser)
-        if open_browser:
-            open_browser = False
+        plt.show()
         _t += 1
 
         plt.pause(1 / 60)  # 60 fps

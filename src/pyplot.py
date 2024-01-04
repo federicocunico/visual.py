@@ -10,6 +10,7 @@ from .cfg import PORT
 class PyPlot:
     model: CurrentState
     _msgs_sent: int = 0
+    _ever_shown: bool = False
 
     def __init__(self, title: str | None, host: str = "localhost", port: int = PORT):
         self.model = CurrentState(title=title)
@@ -72,7 +73,7 @@ class PyPlot:
     def show(self, include_wait: bool = False, open_browser: bool = False) -> None:
         self._ensure_connection()
         self._send(include_wait=include_wait)
-        if open_browser:
+        if open_browser or not self._ever_shown:
             self._open_browser()
 
     def pause(self, time_seconds: int):
@@ -116,4 +117,5 @@ class PyPlot:
         self._msgs_sent += 1
 
     def _open_browser(self):
+        self._ever_shown = True
         webbrowser.open(self._socket_url)

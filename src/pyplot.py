@@ -7,12 +7,23 @@ from .models import Color, Skeleton, CurrentState, Vector3
 from .cfg import PORT
 
 
+_main_thread = None
+
+
+def initialize_app():
+    from .server import server_socket_main_thread
+    global _main_thread
+    if _main_thread is None:
+        _main_thread = server_socket_main_thread(port=PORT)
+
+
 class PyPlot:
     model: CurrentState
     _msgs_sent: int = 0
     _ever_shown: bool = False
 
     def __init__(self, title: str | None, host: str = "localhost", port: int = PORT):
+        initialize_app()
         self.model = CurrentState(title=title)
 
         self._socket_url = f"http://{host}:{port}"

@@ -95,7 +95,7 @@ def server_socket_main_thread(port: int):
     if server_main_thread is None:
         # First time running the app? Then serve it!
         def serve():
-            socketio.run(app, host="0.0.0.0", port=port)
+            socketio.run(app, host="0.0.0.0", port=port, allow_unsafe_werkzeug=True)
 
         server_main_thread = Thread(target=serve)
         server_main_thread.start()

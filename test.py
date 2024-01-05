@@ -1,5 +1,10 @@
 import numpy as np
-from src.pyplot import PyPlot
+
+try:
+    from visual_py import PyPlot
+except ImportError:
+    print("Failed to import visual_py. Using local version.")
+    from src.pyplot import PyPlot
 
 
 def example1():

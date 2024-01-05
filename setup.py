@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import find_namespace_packages, find_packages, setup
 
 VERSION = "0.0.1"
 DESCRIPTION = "Visualize data in 3D with three.js"
@@ -14,6 +14,7 @@ setup(
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     packages=find_packages(),
+    # packages=find_namespace_packages(),
     install_requires=[
         "flask",
         "flask_cors",
@@ -23,7 +24,6 @@ setup(
         "requests",
         "numpy",
         "webcolors",
-        "socketio",
         "websocket-client",
     ],  # add any additional packages that
     # needs to be installed along with your package. Eg: 'caer'
@@ -46,3 +46,13 @@ setup(
         "Programming Language :: Python :: 3.9",
     ],
 )
+
+
+def _post_install_steps():
+    from src.extra.get_index_html import download_and_extract_release
+
+    download_and_extract_release("src/dist")
+    # download_and_extract_release("dist")
+
+
+_post_install_steps()

@@ -12,6 +12,7 @@ _main_thread = None
 
 def initialize_app():
     from .server import server_socket_main_thread
+
     global _main_thread
     if _main_thread is None:
         _main_thread = server_socket_main_thread(port=PORT)

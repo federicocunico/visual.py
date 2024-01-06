@@ -98,6 +98,7 @@ def server_socket_main_thread(port: int):
             socketio.run(app, host="0.0.0.0", port=port, allow_unsafe_werkzeug=True)
 
         server_main_thread = Thread(target=serve)
+        server_main_thread.setDaemon(True)
         server_main_thread.start()
     return server_main_thread
 

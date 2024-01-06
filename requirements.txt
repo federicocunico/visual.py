@@ -6,5 +6,8 @@ numpy
 pydantic
 python-socketio
 requests
+setuptools
 webcolors
 websocket-client
+wheel
+

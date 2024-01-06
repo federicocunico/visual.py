@@ -24,6 +24,7 @@ setup(
         "requests",
         "numpy",
         "webcolors",
+        "wheel",
         "websocket-client",
     ],  # add any additional packages that
     # needs to be installed along with your package. Eg: 'caer'
@@ -49,9 +50,9 @@ setup(
 
 
 def _post_install_steps():
-    from src.extra.get_index_html import download_and_extract_release
+    from visual_py.extra.get_index_html import download_and_extract_release
 
-    download_and_extract_release("src/dist")
+    download_and_extract_release("visual_py/dist")
     # download_and_extract_release("dist")
 
 

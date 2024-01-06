@@ -4,7 +4,23 @@ Python interface for the Visual.js library, wrapper for Three.js as substitution
 
 ## Installation
 
-TODO
+Execute 
+```bash
+pip install .
+```
 
-## NOTES
-Do not send more than 30 data per second or the browser will hang. In case happens, re-run the python script.
+or
+
+```bash
+python setup.py install
+```
+
+If you are in developer mode run
+
+```bash
+pip install -e .
+```
+
+## Test
+
+Take a look to `test.py` to see how the library works.

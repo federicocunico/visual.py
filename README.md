@@ -24,3 +24,23 @@ pip install -e .
 ## Test
 
 Take a look to `test.py` to see how the library works.
+
+
+## Distribtion
+
+Using build (`pip install build --upgrade`)
+
+```bash
+python -m build
+```
+
+Then upload to pypi
+
+```bash
+python3 -m twine upload --repository visual-py dist/*
+```
+
+LEGACY:
+```bash
+python setup.py sdist bdist_wheel
+```

@@ -56,7 +56,13 @@ def download_and_extract_release(
     owner: str = "federicocunico",
     repo: str = "visual.js",
     asset_name: str = "index.tar.gz",
-):
+    force: bool = False,
+):  
+    if not force:
+        # check if destination folder exists
+        if os.path.isdir(dst) and len(os.listdir(dst)) > 0:
+            return
+
     if os.path.isdir(dst):
         shutil.rmtree(dst)
     os.makedirs(dst, exist_ok=True)
@@ -103,4 +109,4 @@ def download_and_extract_release(
 
 if __name__ == "__main__":
     # download_and_extract_artifact()
-    download_and_extract_release("src/dist")
+    download_and_extract_release("src/dist", force=True)

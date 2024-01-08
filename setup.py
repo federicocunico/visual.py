@@ -1,6 +1,10 @@
 from setuptools import find_namespace_packages, find_packages, setup
 
-VERSION = "0.0.1"
+
+get_version = (
+    lambda: open("visual_py/_version.py").readlines()[-1].split()[-1].strip('"')
+)
+
 DESCRIPTION = "Visualize data in 3D with three.js"
 LONG_DESCRIPTION = "Visualize data in 3D with three.js as replacement of matplotlib and open3d for a multi-platform supported visualization."
 
@@ -8,7 +12,7 @@ LONG_DESCRIPTION = "Visualize data in 3D with three.js as replacement of matplot
 setup(
     # the name must match the folder name 'verysimplemodule'
     name="visual_py",
-    version=VERSION,
+    version=get_version(),
     author="Federico Cunico",
     author_email="<federico@cunico.net>",
     description=DESCRIPTION,
@@ -50,10 +54,14 @@ setup(
 
 
 def _post_install_steps():
-    from visual_py.extra.get_index_html import download_and_extract_release
+    # This is performed only when executing python setup.py install in local mode
+    try:
+        from visual_py.extra.get_index_html import download_and_extract_release
 
-    download_and_extract_release("visual_py/dist")
-    # download_and_extract_release("dist")
+        download_and_extract_release("visual_py/dist", force=True)
+        # download_and_extract_release("dist")
+    except Exception as e:
+        pass
 
 
 _post_install_steps()

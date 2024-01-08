@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools >= 69.0"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "visual-py"
+dynamic = ["version"]
+dependencies = [
+    "flask",
+    "flask_cors",
+    "flask_socketio",
+    "python-socketio",
+    "pydantic",
+    "requests",
+    "numpy",
+    "webcolors",
+    "wheel",
+    "websocket-client",
+]
+requires-python = ">=3.8"
+authors = [{ name = "Federico Cunico", email = "federico@cunico.net" }]
+maintainers = [{ name = "Federico Cunico", email = "federico@cunico.net" }]
+description = "Visualize data in 3D with three.js as replacement of matplotlib and open3d for a multi-platform supported visualization."
+readme = "README.md"
+license = { file = "LICENSE.md" }
+keywords = [
+    "python",
+    "visualization",
+    "three.js",
+    "matplotlib",
+    "open3d",
+    "3d",
+    "plot",
+    "scatter",
+    "plot3d",
+    "scatter3d",
+    "visualize",
+    "visualisation",
+    "visualize3d",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+]
+
+# [project.optional-dependencies]
+# gui = ["PyQt5"]
+# cli = ["rich", "click"]
+
+[project.urls]
+# Homepage = "https://github.com/federicocunico/visual.py"
+# Documentation = "https://github.com/federicocunico/visual.py"
+Repository = "https://github.com/federicocunico/visual.py"
+"Bug Tracker" = "https://github.com/federicocunico/visual.py/issues"
+# Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"

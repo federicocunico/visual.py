@@ -37,7 +37,7 @@ python -m build
 Then upload to pypi
 
 ```bash
-python3 -m twine upload --repository visual-py dist/*
+python3 -m twine upload --repository visual_py dist/*
 ```
 
 LEGACY:
